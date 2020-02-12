@@ -69,7 +69,6 @@ module.exports = {
     "import/newline-after-import": "warn",
     "import/no-anonymous-default-export": "warn",
     "import/no-default-export": "error",
-    "import/no-unused-modules": ["warn", { "unusedExports": true }],
 
     // prettier
     "prettier/prettier": [
