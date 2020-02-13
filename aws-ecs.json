@@ -24,11 +24,11 @@
       "workingDirectory": null,
       "secrets": null,
       "dockerSecurityOptions": null,
-      "memory": 512,
-      "memoryReservation": null,
+      "memory": null,
+      "memoryReservation": 256,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:d765b827a13fa07e1a61e0b4e6ab79c86f1fa189",
+      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:0f99787ca7b8c80b6b137fba53a835763e58ef28",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -49,12 +49,12 @@
     }
   ],
   "placementConstraints": [],
-  "memory": "512",
+  "memory": "1024",
   "taskRoleArn": "arn:aws:iam::178710318434:role/ecsTaskExecutionRole",
   "compatibilities": [
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:3",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:6",
   "family": "graphql-server",
   "requiresAttributes": [
     {
@@ -62,6 +62,12 @@
       "targetType": null,
       "value": null,
       "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
     },
     {
       "targetId": null,
@@ -81,8 +87,8 @@
     "EC2"
   ],
   "networkMode": null,
-  "cpu": "256",
-  "revision": 3,
+  "cpu": "1024",
+  "revision": 6,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
