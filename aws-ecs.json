@@ -28,7 +28,7 @@
       "memoryReservation": 256,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:0f99787ca7b8c80b6b137fba53a835763e58ef28",
+      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:13ae47c356788ee86a622d030ca9680650f04177",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -49,12 +49,12 @@
     }
   ],
   "placementConstraints": [],
-  "memory": "1024",
+  "memory": "256",
   "taskRoleArn": "arn:aws:iam::178710318434:role/ecsTaskExecutionRole",
   "compatibilities": [
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:6",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:8",
   "family": "graphql-server",
   "requiresAttributes": [
     {
@@ -87,8 +87,8 @@
     "EC2"
   ],
   "networkMode": null,
-  "cpu": "1024",
-  "revision": 6,
+  "cpu": "256",
+  "revision": 8,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
