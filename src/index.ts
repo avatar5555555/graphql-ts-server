@@ -1,5 +1,7 @@
 import { ApolloServer, gql } from "apollo-server";
 
+import { resolvers } from "./resolvers";
+
 const typeDefs = gql`
   type Book {
     title: String
@@ -10,23 +12,6 @@ const typeDefs = gql`
     books: [Book]
   }
 `;
-
-const books = [
-  {
-    title: "Harry Potter and the Chamber of Secrets",
-    author: "J.K. Rowling",
-  },
-  {
-    title: "Jurassic Park",
-    author: "Michael Crichton",
-  },
-];
-
-const resolvers = {
-  Query: {
-    books: () => books,
-  },
-};
 
 const server = new ApolloServer({ typeDefs, resolvers });
 

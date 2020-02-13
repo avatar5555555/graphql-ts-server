@@ -1,0 +1,11 @@
+# ignore all
+**
+
+# except files
+!package.json
+!package-lock.json
+!tsconfig.json
+!.env
+
+# except folders
+!src
