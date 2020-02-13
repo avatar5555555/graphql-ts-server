@@ -2,7 +2,7 @@
   "family": "graphql-server",
   "taskRoleArn": "arn:aws:iam::178710318434:role/ecsTaskExecutionRole",
   "executionRoleArn": "arn:aws:iam::178710318434:role/ecsTaskExecutionRole",
-  "networkMode": "none",
+  "networkMode": null,
   "containerDefinitions": [
     {
       "name": "gql-server",
