@@ -1,21 +1,10 @@
 {
   "family": "graphql-server",
-  "taskRoleArn": "arn:aws:iam::178710318434:role/ecsTaskExecutionRole",
-  "executionRoleArn": "arn:aws:iam::178710318434:role/ecsTaskExecutionRole",
-  "networkMode": null,
+  "networkMode": "awsvpc",
   "containerDefinitions": [
     {
       "name": "gql-server",
-      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:latest",
-      "repositoryCredentials": {
-        "credentialsParameter": ""
-      },
-      "cpu": 256,
-      "memory": 512,
-      "memoryReservation": 0,
-      "links": [
-        ""
-      ],
+      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555",
       "portMappings": [
         {
           "hostPort": 80,
@@ -29,179 +18,12 @@
       ],
       "command": [
         ""
-      ],
-      "environment": [
-        {
-          "name": "",
-          "value": ""
-        }
-      ],
-      "mountPoints": [
-        {
-          "sourceVolume": "",
-          "containerPath": "",
-          "readOnly": true
-        }
-      ],
-      "volumesFrom": [
-        {
-          "sourceContainer": "",
-          "readOnly": true
-        }
-      ],
-      "linuxParameters": {
-        "capabilities": {
-          "add": [
-            ""
-          ],
-          "drop": [
-            ""
-          ]
-        },
-        "devices": [
-          {
-            "hostPath": "",
-            "containerPath": "",
-            "permissions": [
-              "read"
-            ]
-          }
-        ],
-        "initProcessEnabled": true,
-        "sharedMemorySize": 0,
-        "tmpfs": [
-          {
-            "containerPath": "",
-            "size": 0,
-            "mountOptions": [
-              ""
-            ]
-          }
-        ],
-        "maxSwap": 0,
-        "swappiness": 0
-      },
-      "secrets": [
-        {
-          "name": "",
-          "valueFrom": ""
-        }
-      ],
-      "dependsOn": [
-        {
-          "containerName": "",
-          "condition": "COMPLETE"
-        }
-      ],
-      "startTimeout": 0,
-      "stopTimeout": 0,
-      "hostname": "",
-      "user": "",
-      "workingDirectory": "",
-      "disableNetworking": true,
-      "privileged": true,
-      "readonlyRootFilesystem": true,
-      "dnsServers": [
-        ""
-      ],
-      "dnsSearchDomains": [
-        ""
-      ],
-      "extraHosts": [
-        {
-          "hostname": "",
-          "ipAddress": ""
-        }
-      ],
-      "dockerSecurityOptions": [
-        ""
-      ],
-      "interactive": true,
-      "pseudoTerminal": true,
-      "dockerLabels": {
-        "KeyName": ""
-      },
-      "ulimits": [
-        {
-          "name": "rttime",
-          "softLimit": 0,
-          "hardLimit": 0
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awsfirelens",
-        "options": {
-          "KeyName": ""
-        },
-        "secretOptions": [
-          {
-            "name": "",
-            "valueFrom": ""
-          }
-        ]
-      },
-      "healthCheck": {
-        "command": [
-          ""
-        ],
-        "interval": 0,
-        "timeout": 0,
-        "retries": 0,
-        "startPeriod": 0
-      },
-      "systemControls": [
-        {
-          "namespace": "",
-          "value": ""
-        }
-      ],
-      "resourceRequirements": [
-        {
-          "value": "",
-          "type": "InferenceAccelerator"
-        }
-      ],
-      "firelensConfiguration": {
-        "type": "fluentd",
-        "options": {
-          "KeyName": ""
-        }
-      }
-    }
-  ],
-  "placementConstraints": [
-    {
-      "type": "memberOf",
-      "expression": ""
+      ]
     }
   ],
   "requiresCompatibilities": [
     "EC2"
   ],
   "cpu": "256",
-  "memory": "512",
-  "tags": [
-    {
-      "key": "",
-      "value": ""
-    }
-  ],
-  "pidMode": "task",
-  "ipcMode": "none",
-  "proxyConfiguration": {
-    "type": "APPMESH",
-    "containerName": "",
-    "properties": [
-      {
-        "name": "",
-        "value": ""
-      }
-    ]
-  },
-  "inferenceAccelerators": [
-    {
-      "deviceName": "",
-      "deviceType": ""
-    }
-  ]
+  "memory": "512"
 }
