@@ -4,7 +4,7 @@ import { resolvers } from "./resolvers";
 
 const typeDefs = gql`
   type Book {
-    title: Sng
+    title: String
     author: String
   }
 
