@@ -1,4 +1,4 @@
-.PHONY: dev build start prod test gen
+.PHONY: dev start prod test gen
 
 gen:
 	npm run generate
@@ -8,9 +8,6 @@ dev:
 
 test:
 	npm test
-
-build:
-	npm run build
 
 start:
 	npm start
