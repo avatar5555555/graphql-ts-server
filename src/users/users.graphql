@@ -3,7 +3,7 @@ type User {
   email: String!
   firstName: String!
   lastName: String!
-  artworks: [Artwork!]!
+  artworks: [Artwork!]
 }
 
 type Query {

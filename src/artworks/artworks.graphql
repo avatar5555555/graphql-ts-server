@@ -14,7 +14,7 @@ type Artwork {
   author: User!
 }
 
-type Query  {
+type Query {
   artwork(id: ID!): Artwork
   artworks: [Artwork!]!
   artworksByArtist(id: ID!): [Artwork!]!

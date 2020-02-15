@@ -102,7 +102,7 @@ export type User = {
   email: Scalars["String"];
   firstName: Scalars["String"];
   lastName: Scalars["String"];
-  artworks: Array<Artwork>;
+  artworks?: Maybe<Array<Artwork>>;
 };
 
 export type UserInput = {
@@ -345,7 +345,7 @@ export type UserResolvers<
   firstName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   artworks?: Resolver<
-    Array<ResolversTypes["Artwork"]>,
+    Maybe<Array<ResolversTypes["Artwork"]>>,
     ParentType,
     ContextType
   >;
