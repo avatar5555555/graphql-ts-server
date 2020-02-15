@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
   env: {
     es6: true,
@@ -32,7 +30,7 @@ module.exports = {
   settings: {
     "import/resolver": {
       node: {
-        paths: [path.resolve(__dirname, ".")],
+        paths: ["src"],
         extensions: [".mjs", ".json", ".js", ".ts", ".d.ts"],
       }
     },
