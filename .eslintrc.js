@@ -83,4 +83,13 @@ module.exports = {
     "promise/prefer-await-to-then": "error",
     "promise/prefer-await-to-callbacks": "error",
   },
+  // HACK https://github.com/typescript-eslint/typescript-eslint/issues/46
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': [2, { args: 'none' }]
+      }
+    }
+  ]
 };
