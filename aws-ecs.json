@@ -16,7 +16,12 @@
       "command": null,
       "linuxParameters": null,
       "cpu": 256,
-      "environment": [],
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "development"
+        }
+      ],
       "resourceRequirements": null,
       "ulimits": null,
       "dnsServers": null,
@@ -28,7 +33,7 @@
       "memoryReservation": 256,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:a8e3e5c133c4a284f992a91d4259d23742f170e4",
+      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:84f4566db59ca03762b680a5046a5ca67fc20a62",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -54,7 +59,7 @@
   "compatibilities": [
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:14",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:20",
   "family": "graphql-server",
   "requiresAttributes": [
     {
@@ -88,7 +93,7 @@
   ],
   "networkMode": null,
   "cpu": "256",
-  "revision": 14,
+  "revision": 20,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
