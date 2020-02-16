@@ -16,24 +16,24 @@
       "command": null,
       "linuxParameters": null,
       "cpu": 256,
-      "environment": [
-        {
-          "name": "NODE_ENV",
-          "value": "development"
-        }
-      ],
+      "environment": [],
       "resourceRequirements": null,
       "ulimits": null,
       "dnsServers": null,
       "mountPoints": [],
       "workingDirectory": null,
-      "secrets": null,
+      "secrets": [
+        {
+          "valueFrom": "arn:aws:ssm:us-east-2:178710318434:parameter/NODE_ENV",
+          "name": "NODE_ENV"
+        }
+      ],
       "dockerSecurityOptions": null,
       "memory": null,
       "memoryReservation": 256,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:84f4566db59ca03762b680a5046a5ca67fc20a62",
+      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:3c9ab0fd1a89de8d449c3f00bbc7aa9773686173",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -59,7 +59,7 @@
   "compatibilities": [
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:20",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:22",
   "family": "graphql-server",
   "requiresAttributes": [
     {
@@ -85,6 +85,12 @@
       "targetType": null,
       "value": null,
       "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.secrets.ssm.environment-variables"
     }
   ],
   "pidMode": null,
@@ -93,7 +99,7 @@
   ],
   "networkMode": null,
   "cpu": "256",
-  "revision": 20,
+  "revision": 22,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
