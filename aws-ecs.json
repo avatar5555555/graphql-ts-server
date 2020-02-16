@@ -33,13 +33,22 @@
       "memoryReservation": 256,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:3c9ab0fd1a89de8d449c3f00bbc7aa9773686173",
+      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:919e9527b79d597817f0cf4d687e1d8f3dbc13e9",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
       "disableNetworking": null,
       "interactive": null,
-      "healthCheck": null,
+      "healthCheck": {
+        "retries": 3,
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:4000/.well-known/apollo/server-health || exit 1"
+        ],
+        "timeout": 5,
+        "interval": 30,
+        "startPeriod": null
+      },
       "essential": true,
       "links": null,
       "hostname": null,
@@ -59,9 +68,15 @@
   "compatibilities": [
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:22",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:27",
   "family": "graphql-server",
   "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.24"
+    },
     {
       "targetId": null,
       "targetType": null,
@@ -84,6 +99,12 @@
       "targetId": null,
       "targetType": null,
       "value": null,
+      "name": "ecs.capability.container-health-check"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
       "name": "ecs.capability.execution-role-ecr-pull"
     },
     {
@@ -99,7 +120,7 @@
   ],
   "networkMode": null,
   "cpu": "256",
-  "revision": 22,
+  "revision": 27,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
