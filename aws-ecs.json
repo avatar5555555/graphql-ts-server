@@ -24,7 +24,7 @@
       "workingDirectory": null,
       "secrets": [
         {
-          "valueFrom": "arn:aws:ssm:us-east-2:178710318434:parameter/NODE_ENV",
+          "valueFrom": "arn:aws:ssm:us-east-2:178710318434:parameter/environment",
           "name": "NODE_ENV"
         }
       ],
