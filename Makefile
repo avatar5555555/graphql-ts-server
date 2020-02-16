@@ -6,11 +6,11 @@ gen:
 dev:
 	npm run start:dev
 
-test:
-	npm test
-
 build:
 	npm run build
+
+test:
+	npm test
 
 start:
 	npm start

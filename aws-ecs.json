@@ -22,19 +22,33 @@
       "dnsServers": null,
       "mountPoints": [],
       "workingDirectory": null,
-      "secrets": null,
+      "secrets": [
+        {
+          "valueFrom": "arn:aws:ssm:us-east-2:178710318434:parameter/environment",
+          "name": "NODE_ENV"
+        }
+      ],
       "dockerSecurityOptions": null,
       "memory": null,
       "memoryReservation": 256,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:a8e3e5c133c4a284f992a91d4259d23742f170e4",
+      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:919e9527b79d597817f0cf4d687e1d8f3dbc13e9",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
       "disableNetworking": null,
       "interactive": null,
-      "healthCheck": null,
+      "healthCheck": {
+        "retries": 3,
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:4000/.well-known/apollo/server-health || exit 1"
+        ],
+        "timeout": 5,
+        "interval": 30,
+        "startPeriod": null
+      },
       "essential": true,
       "links": null,
       "hostname": null,
@@ -54,9 +68,15 @@
   "compatibilities": [
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:14",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:27",
   "family": "graphql-server",
   "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.24"
+    },
     {
       "targetId": null,
       "targetType": null,
@@ -79,7 +99,19 @@
       "targetId": null,
       "targetType": null,
       "value": null,
+      "name": "ecs.capability.container-health-check"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
       "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.secrets.ssm.environment-variables"
     }
   ],
   "pidMode": null,
@@ -88,7 +120,7 @@
   ],
   "networkMode": null,
   "cpu": "256",
-  "revision": 14,
+  "revision": 27,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,

@@ -7,7 +7,7 @@ import { genSchema } from "./utils/gen-schema";
 dotenv.config();
 
 const schema = genSchema();
-const server = new ApolloServer(schema as any);
+const server = new ApolloServer(schema);
 
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
