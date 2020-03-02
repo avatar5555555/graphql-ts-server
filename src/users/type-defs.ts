@@ -4,9 +4,7 @@ export const typeDefs = gql`
   type User {
     id: ID!
     email: String!
-    firstName: String!
-    lastName: String!
-    artworks: [Artwork!]
+    createdAt: Date!
   }
 
   type Query {
@@ -16,19 +14,13 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    register(input: UserInput!): User!
-    signIn(input: SingInInput!): User!
+    register(email: String!, password: String!): AuthResponse
+    signIn(email: String!, password: String!): AuthResponse
   }
 
-  input UserInput {
-    email: String!
-    firstName: String!
-    lastName: String!
-    password: String!
-  }
-
-  input SingInInput {
-    email: String!
-    password: String!
+  type AuthResponse {
+    user: User!
+    token: String!
+    refreshToken: String!
   }
 `;
