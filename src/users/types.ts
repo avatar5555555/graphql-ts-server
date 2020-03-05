@@ -20,8 +20,3 @@ export interface UserDto {
   salt: string;
   created_at: Date;
 }
-
-export interface Tokens {
-  token: string;
-  refreshToken: string;
-}

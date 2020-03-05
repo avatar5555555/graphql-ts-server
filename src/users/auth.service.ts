@@ -1,11 +1,12 @@
 import { UserInputError, AuthenticationError } from "apollo-server";
 import * as bcrypt from "bcryptjs";
-import { sign } from "jsonwebtoken";
 
 import { User, AuthResponse } from "../resolvers-types";
-import { getEmailFormToken } from "../utils/get-email-from-token";
+import { getTokens } from "../utils/get-tokens";
+import { passwordSchema } from "../validation-schemas/password-schema";
+import { emailSchema } from "../validation-schemas/email-schema";
 
-import { UserRepository, UserInput, Tokens, UserDto } from "./types";
+import { UserRepository, UserInput } from "./types";
 import { UserFabric } from "./user.entity";
 
 export class AuthService {
@@ -15,6 +16,8 @@ export class AuthService {
   ) {}
 
   signUp = async (userInput: UserInput): Promise<AuthResponse | never> => {
+    this.validateCredentials(userInput.email, userInput.password);
+
     const userExist = await this.checkIfEmailExists(userInput.email);
 
     if (userExist) {
@@ -25,7 +28,7 @@ export class AuthService {
 
     const userDto = await this.userRepository.signUp(userEntity);
     const user = this.userFabric.getUserFromDto(userDto);
-    const tokens = this.getTokens(user);
+    const tokens = getTokens(user);
 
     return { user, ...tokens };
   };
@@ -44,7 +47,7 @@ export class AuthService {
 
     if (isValidCredentials && userDto) {
       const user = this.userFabric.getUserFromDto(userDto);
-      const tokens = this.getTokens(user);
+      const tokens = getTokens(user);
 
       return { user, ...tokens };
     }
@@ -52,19 +55,8 @@ export class AuthService {
     throw new AuthenticationError("Password or email is incorrect");
   };
 
-  me = async (req: any) => {
-    const isUserValid = await this.verifyToken(req);
-
-    if (isUserValid) {
-      const token = req.headers.authorization || "";
-      const email = getEmailFormToken(token);
-
-      const userDto = (await this.userRepository.findUserByEmail(
-        email,
-      )) as UserDto;
-
-      const user = this.userFabric.getUserFromDto(userDto);
-
+  me = async ({ user }: { user: User | null }) => {
+    if (user) {
       return user;
     }
 
@@ -87,27 +79,12 @@ export class AuthService {
     return hash === currentHash;
   };
 
-  verifyToken = async (req: any) => {
-    const token = req.headers.authorization || "";
+  validateCredentials = (email: string, password: string) => {
+    const isEmailValid = emailSchema.isValidSync(email);
+    const isPasswordValid = passwordSchema.isValidSync(password);
 
-    const email = getEmailFormToken(token);
-
-    return await this.checkIfEmailExists(email);
-  };
-
-  getTokens = ({ id, email }: User): Tokens => {
-    const token = sign(
-      { id, email },
-      process.env.ACCESS_TOKEN_SECRET as string,
-      { expiresIn: "15min" },
-    );
-
-    const refreshToken = sign(
-      { id, email },
-      process.env.REFRESH_TOKEN_SECRET as string,
-      { expiresIn: "30d" },
-    );
-
-    return { token, refreshToken };
+    if (!isEmailValid || !isPasswordValid) {
+      throw new UserInputError("Unprocessable Entity");
+    }
   };
 }
