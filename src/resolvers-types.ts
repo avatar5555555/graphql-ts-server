@@ -64,7 +64,6 @@ export type AuthResponse = {
   __typename?: "AuthResponse";
   user: User;
   token: Scalars["String"];
-  refreshToken: Scalars["String"];
 };
 
 export type Mutation = {
@@ -325,7 +324,6 @@ export type AuthResponseResolvers<
 > = ResolversObject<{
   user?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  refreshToken?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: isTypeOfResolverFn<ParentType>;
 }>;
 

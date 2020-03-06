@@ -21,6 +21,5 @@ export const typeDefs = gql`
   type AuthResponse {
     user: User!
     token: String!
-    refreshToken: String!
   }
 `;

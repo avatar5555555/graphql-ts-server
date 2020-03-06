@@ -7,8 +7,6 @@ const selectUserByEmailQuery = "SELECT * FROM users WHERE users.email = $1";
 
 const signUpQuery =
   "INSERT INTO USERS(email, salt, password, created_at) VALUES($1, $2, $3, $4) RETURNING *";
-// request ->   resolver                           -> service            -> repository
-//            тут уходит сетевой слой controller .. тут БЛ use case ... тут слой доступа к данным DAL
 
 export class Repository implements UserRepository {
   private store: Pool;

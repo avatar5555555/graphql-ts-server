@@ -2,7 +2,7 @@ import { UserInputError, AuthenticationError } from "apollo-server";
 import * as bcrypt from "bcryptjs";
 
 import { User, AuthResponse } from "../resolvers-types";
-import { getTokens } from "../utils/get-tokens";
+import { getTokens } from "../utils/get-token";
 import { passwordSchema } from "../validation-schemas/password-schema";
 import { emailSchema } from "../validation-schemas/email-schema";
 
@@ -28,9 +28,9 @@ export class AuthService {
 
     const userDto = await this.userRepository.signUp(userEntity);
     const user = this.userFabric.getUserFromDto(userDto);
-    const tokens = getTokens(user);
+    const token = getTokens(user);
 
-    return { user, ...tokens };
+    return { user, token };
   };
 
   signIn = async (userInput: UserInput): Promise<AuthResponse | never> => {
@@ -47,9 +47,9 @@ export class AuthService {
 
     if (isValidCredentials && userDto) {
       const user = this.userFabric.getUserFromDto(userDto);
-      const tokens = getTokens(user);
+      const token = getTokens(user);
 
-      return { user, ...tokens };
+      return { user, token };
     }
 
     throw new AuthenticationError("Password or email is incorrect");

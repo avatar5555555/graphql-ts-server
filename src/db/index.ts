@@ -1,9 +1,11 @@
 import { Pool } from "pg";
 
+import { config } from "config";
+
 export const db = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: Number(process.env.PGPORT),
+  user: config.pgUser,
+  host: config.pgHost,
+  database: config.db,
+  password: config.pgPassword,
+  port: config.dbPort,
 });
