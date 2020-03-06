@@ -1,22 +1,38 @@
-import { defaultUser } from "./fixtures";
+import { UserResolvers, QueryUserArgs } from "../resolvers-types";
+import { db } from "../db";
 
-import { User, UserResolvers } from "resolvers-types";
+import { Repository } from "./repository";
+import { AuthService } from "./auth.service";
+import { UserFabric } from "./user.entity";
+import { UserInput } from "./types";
 
-const register = (...args: any) => {
-  console.log(args);
+export const store = new Repository(db);
+export const userFabric = new UserFabric();
+export const authService = new AuthService(store, userFabric);
+
+const register = (_: any, args: UserInput) => {
+  return authService.signUp(args);
 };
 
-const user = (...args: any): User => {
-  console.log(args);
+const signIn = (_: any, args: UserInput) => {
+  return authService.signIn(args);
+};
 
-  return defaultUser;
+const me = (_: any, __: any, context: any) => {
+  return authService.me(context);
+};
+
+const user = async (_: any, args: QueryUserArgs) => {
+  console.log(args);
 };
 
 export const resolvers: UserResolvers = {
   Mutation: {
     register,
+    signIn,
   },
   Query: {
     user,
+    me,
   },
 };

@@ -1,4 +1,8 @@
-import { GraphQLResolveInfo } from "graphql";
+import {
+  GraphQLResolveInfo,
+  GraphQLScalarType,
+  GraphQLScalarTypeConfig,
+} from "graphql";
 
 export type Maybe<T> = T | null;
 export type RequireFields<T, K extends keyof T> = {
@@ -12,6 +16,22 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
+};
+
+export type Artist = {
+  __typename?: "Artist";
+  id: Scalars["ID"];
+  firstName?: Maybe<Scalars["String"]>;
+  lastName?: Maybe<Scalars["String"]>;
+  user: User;
+  artworks?: Maybe<Array<Artwork>>;
+};
+
+export type ArtistInput = {
+  firstName: Scalars["String"];
+  lastName: Scalars["String"];
+  userID: Scalars["String"];
 };
 
 export type Artwork = {
@@ -40,12 +60,19 @@ export enum ArtworkType {
   Image = "IMAGE",
 }
 
+export type AuthResponse = {
+  __typename?: "AuthResponse";
+  user: User;
+  token: Scalars["String"];
+};
+
 export type Mutation = {
   __typename?: "Mutation";
   createArtwork: Artwork;
   deleteArtwork: Artwork;
-  register: User;
-  signIn: User;
+  register?: Maybe<AuthResponse>;
+  signIn?: Maybe<AuthResponse>;
+  updateArtist: Artist;
   updateArtwork: Artwork;
 };
 
@@ -58,11 +85,17 @@ export type MutationDeleteArtworkArgs = {
 };
 
 export type MutationRegisterArgs = {
-  input: UserInput;
+  email: Scalars["String"];
+  password: Scalars["String"];
 };
 
 export type MutationSignInArgs = {
-  input: SingInInput;
+  email: Scalars["String"];
+  password: Scalars["String"];
+};
+
+export type MutationUpdateArtistArgs = {
+  input: ArtistInput;
 };
 
 export type MutationUpdateArtworkArgs = {
@@ -71,12 +104,18 @@ export type MutationUpdateArtworkArgs = {
 
 export type Query = {
   __typename?: "Query";
+  artist?: Maybe<Artist>;
+  artists: Array<Artist>;
   artwork?: Maybe<Artwork>;
   artworks: Array<Artwork>;
   artworksByArtist: Array<Artwork>;
   me?: Maybe<User>;
   user?: Maybe<User>;
   users: Array<User>;
+};
+
+export type QueryArtistArgs = {
+  id: Scalars["ID"];
 };
 
 export type QueryArtworkArgs = {
@@ -91,25 +130,11 @@ export type QueryUserArgs = {
   id: Scalars["ID"];
 };
 
-export type SingInInput = {
-  email: Scalars["String"];
-  password: Scalars["String"];
-};
-
 export type User = {
   __typename?: "User";
   id: Scalars["ID"];
   email: Scalars["String"];
-  firstName: Scalars["String"];
-  lastName: Scalars["String"];
-  artworks?: Maybe<Array<Artwork>>;
-};
-
-export type UserInput = {
-  email: Scalars["String"];
-  firstName: Scalars["String"];
-  lastName: Scalars["String"];
-  password: Scalars["String"];
+  createdAt: Scalars["Date"];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -225,14 +250,16 @@ export type DirectiveResolverFn<
 export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars["ID"]>;
-  Artwork: ResolverTypeWrapper<Artwork>;
+  Artist: ResolverTypeWrapper<Artist>;
   String: ResolverTypeWrapper<Scalars["String"]>;
-  ArtworkType: ArtworkType;
   User: ResolverTypeWrapper<User>;
+  Date: ResolverTypeWrapper<Scalars["Date"]>;
+  Artwork: ResolverTypeWrapper<Artwork>;
+  ArtworkType: ArtworkType;
   Mutation: ResolverTypeWrapper<{}>;
   ArtworkInput: ArtworkInput;
-  UserInput: UserInput;
-  SingInInput: SingInInput;
+  AuthResponse: ResolverTypeWrapper<AuthResponse>;
+  ArtistInput: ArtistInput;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 }>;
 
@@ -240,15 +267,37 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   Query: {};
   ID: Scalars["ID"];
-  Artwork: Artwork;
+  Artist: Artist;
   String: Scalars["String"];
-  ArtworkType: ArtworkType;
   User: User;
+  Date: Scalars["Date"];
+  Artwork: Artwork;
+  ArtworkType: ArtworkType;
   Mutation: {};
   ArtworkInput: ArtworkInput;
-  UserInput: UserInput;
-  SingInInput: SingInInput;
+  AuthResponse: AuthResponse;
+  ArtistInput: ArtistInput;
   Boolean: Scalars["Boolean"];
+}>;
+
+export type ArtistResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Artist"] = ResolversParentTypes["Artist"]
+> = ResolversObject<{
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  firstName?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  lastName?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  user?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  artworks?: Resolver<
+    Maybe<Array<ResolversTypes["Artwork"]>>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: isTypeOfResolverFn<ParentType>;
 }>;
 
 export type ArtworkResolvers<
@@ -269,6 +318,20 @@ export type ArtworkResolvers<
   __isTypeOf?: isTypeOfResolverFn<ParentType>;
 }>;
 
+export type AuthResponseResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["AuthResponse"] = ResolversParentTypes["AuthResponse"]
+> = ResolversObject<{
+  user?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+}>;
+
+export interface DateScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["Date"], any> {
+  name: "Date";
+}
+
 export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
@@ -286,16 +349,22 @@ export type MutationResolvers<
     RequireFields<MutationDeleteArtworkArgs, "id">
   >;
   register?: Resolver<
-    ResolversTypes["User"],
+    Maybe<ResolversTypes["AuthResponse"]>,
     ParentType,
     ContextType,
-    RequireFields<MutationRegisterArgs, "input">
+    RequireFields<MutationRegisterArgs, "email" | "password">
   >;
   signIn?: Resolver<
-    ResolversTypes["User"],
+    Maybe<ResolversTypes["AuthResponse"]>,
     ParentType,
     ContextType,
-    RequireFields<MutationSignInArgs, "input">
+    RequireFields<MutationSignInArgs, "email" | "password">
+  >;
+  updateArtist?: Resolver<
+    ResolversTypes["Artist"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateArtistArgs, "input">
   >;
   updateArtwork?: Resolver<
     ResolversTypes["Artwork"],
@@ -309,6 +378,13 @@ export type QueryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
 > = ResolversObject<{
+  artist?: Resolver<
+    Maybe<ResolversTypes["Artist"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryArtistArgs, "id">
+  >;
+  artists?: Resolver<Array<ResolversTypes["Artist"]>, ParentType, ContextType>;
   artwork?: Resolver<
     Maybe<ResolversTypes["Artwork"]>,
     ParentType,
@@ -342,18 +418,15 @@ export type UserResolvers<
 > = ResolversObject<{
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   email?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  firstName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  lastName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  artworks?: Resolver<
-    Maybe<Array<ResolversTypes["Artwork"]>>,
-    ParentType,
-    ContextType
-  >;
+  createdAt?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
   __isTypeOf?: isTypeOfResolverFn<ParentType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
+  Artist?: ArtistResolvers<ContextType>;
   Artwork?: ArtworkResolvers<ContextType>;
+  AuthResponse?: AuthResponseResolvers<ContextType>;
+  Date?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
