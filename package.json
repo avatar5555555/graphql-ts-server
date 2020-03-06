@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "ACCESS_TOKEN_SECRET=secret jest",
     "start:dev": "nodemon 'src/index.ts' --exec 'ts-node' src/index.ts -e ts,graphql",
     "build": "tsc",
     "start": "nodemon dist/index.js",

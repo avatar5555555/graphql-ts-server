@@ -7,10 +7,7 @@ let id = 0;
 const email = "a@a.a";
 const password = "123456";
 
-process.env.ACCESS_TOKEN_SECRET = "a";
-process.env.REFRESH_TOKEN_SECRET = "b";
-
-const userRepositoryStub: UserRepository = {
+const userRepositoryMock: UserRepository = {
   signIn: (userEntity) => {
     const user = store.find((users) => users.email === userEntity.email);
 
@@ -36,7 +33,7 @@ describe("auth service", () => {
 
   beforeEach(() => {
     store = [];
-    authService = new AuthService(userRepositoryStub, userFabric);
+    authService = new AuthService(userRepositoryMock, userFabric);
   });
 
   it("creates a user", async () => {
