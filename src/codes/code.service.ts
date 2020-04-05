@@ -1,6 +1,6 @@
 import { differenceInMinutes } from "date-fns";
 
-import { config } from "../config";
+import { appConfig } from "../app-config";
 
 import { CodeRepository, MaybeCode, Code } from "./code.types";
 import { CodeFabric } from "./code.entity";
@@ -22,21 +22,11 @@ export class CodeService {
     return;
   };
 
-  private getCodeByUserId = async (userId: string): MaybeCode => {
-    const codeDto = await this.repository.findByUserId(userId);
-
-    if (codeDto) {
-      return this.codeFabric.getCodeFromDto(codeDto);
-    }
-
-    return;
-  };
-
   private getIsCodeExpired = (oldCode: Code): boolean => {
     const now = new Date();
     const difference = differenceInMinutes(now, new Date(oldCode.createdAt));
 
-    return difference > config.codeExpiresIn;
+    return difference > appConfig.codeExpiresIn;
   };
 
   private deleteCode = async (userId: string): MaybeCode => {
@@ -49,7 +39,17 @@ export class CodeService {
     return;
   };
 
-  getCode = async (userId: string): MaybeCode => {
+  private getCodeByUserId = async (userId: string): MaybeCode => {
+    const codeDto = await this.repository.findByUserId(userId);
+
+    if (codeDto) {
+      return this.codeFabric.getCodeFromDto(codeDto);
+    }
+
+    return;
+  };
+
+  getActiveCode = async (userId: string): MaybeCode => {
     const oldCode = await this.getCodeByUserId(userId);
 
     if (oldCode) {

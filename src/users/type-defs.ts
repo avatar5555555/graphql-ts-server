@@ -19,6 +19,7 @@ export const typeDefs = gql`
     signUp(email: String!, password: String!): SignUpResponse
     confirmEmail(email: String!, code: String!): AuthResponse
     signIn(email: String!, password: String!): AuthResponse
+    sendCode(email: String!): SignUpResponse
   }
 
   type SignUpResponse {

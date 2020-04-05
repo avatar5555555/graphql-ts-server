@@ -5,15 +5,53 @@ import { User, AuthResponse, SignUpResponse, Maybe } from "../resolvers-types";
 import { getTokens } from "../utils/get-token";
 import { passwordSchema } from "../validation-schemas/password-schema";
 import { emailSchema } from "../validation-schemas/email-schema";
+import { EmailService } from "../email/email.service";
 
-import { UserRepository, UserInput } from "./user.types";
+import { UserRepository, UserInput, ConfirmEmailInput } from "./user.types";
 import { UserFabric } from "./user.entity";
+
+import { CodeService } from "codes/code.service";
 
 export class AuthService {
   constructor(
     private userRepository: UserRepository,
     private userFabric: UserFabric,
+    private codeService: CodeService,
+    private emailService: EmailService,
   ) {}
+  private checkIfEmailExists = async (email: string): Promise<boolean> => {
+    const userDto = await this.userRepository.findUserByEmail(email);
+
+    return Boolean(userDto);
+  };
+
+  private validatePassword = async (
+    password: string,
+    salt: string,
+    currentHash: string,
+  ): Promise<boolean> => {
+    const hash = await bcrypt.hash(password, salt);
+
+    return hash === currentHash;
+  };
+
+  private validateEmail = (email: string): never | void => {
+    const isEmailValid = emailSchema.isValidSync(email);
+
+    if (!isEmailValid) {
+      throw new UserInputError("Unprocessable Entity");
+    }
+  };
+
+  private validateCredentials = (email: string, password: string): void => {
+    const isEmailValid = emailSchema.isValidSync(email);
+    const isPasswordValid = passwordSchema.isValidSync(password);
+
+    if (!isEmailValid || !isPasswordValid) {
+      throw new UserInputError("Unprocessable Entity");
+    }
+  };
+
   // TODO: remove after client migration
   register = async (
     userInput: UserInput,
@@ -94,28 +132,43 @@ export class AuthService {
     throw new AuthenticationError("User is not authenticated");
   };
 
-  private checkIfEmailExists = async (email: string): Promise<boolean> => {
+  confirmEmail = async (
+    codeInput: ConfirmEmailInput,
+  ): Promise<AuthResponse | never | undefined> => {
+    this.validateEmail(codeInput.email);
+
+    const userDto = await this.userRepository.findUserByEmail(codeInput.email);
+
+    if (userDto) {
+      const user = this.userFabric.getUserFromDto(userDto);
+      const codeEntity = await this.codeService.getActiveCode(user.id);
+      const token = getTokens(user);
+
+      if (codeInput.code !== codeEntity?.code) {
+        throw new UserInputError("Unprocessable Entity");
+      }
+
+      return { user, token };
+    }
+
+    return;
+  };
+
+  sendCode = async (
+    email: string,
+  ): Promise<SignUpResponse | never | undefined> => {
+    this.validateEmail(email);
     const userDto = await this.userRepository.findUserByEmail(email);
 
-    return Boolean(userDto);
-  };
-
-  private validatePassword = async (
-    password: string,
-    salt: string,
-    currentHash: string,
-  ): Promise<boolean> => {
-    const hash = await bcrypt.hash(password, salt);
-
-    return hash === currentHash;
-  };
-
-  private validateCredentials = (email: string, password: string): void => {
-    const isEmailValid = emailSchema.isValidSync(email);
-    const isPasswordValid = passwordSchema.isValidSync(password);
-
-    if (!isEmailValid || !isPasswordValid) {
+    if (!userDto) {
       throw new UserInputError("Unprocessable Entity");
     }
+
+    const user = this.userFabric.getUserFromDto(userDto);
+    const codeEntity = await this.codeService.getActiveCode(user.id);
+
+    this.emailService.sendCode(user.email, codeEntity?.code ?? "");
+
+    return { user };
   };
 }

@@ -56,7 +56,7 @@ describe("code", () => {
     const codeService = new CodeService(repository, codeFabric);
     const formattedId = id.toString();
 
-    await codeService.getCode(formattedId);
+    await codeService.getActiveCode(formattedId);
     expect(store[0].user_id).toEqual(formattedId);
   });
 
@@ -66,8 +66,8 @@ describe("code", () => {
 
     (differenceInMinutes as any).mockReturnValueOnce(1);
 
-    const oldCode = await codeService.getCode(formattedId);
-    const newCode = await codeService.getCode(formattedId);
+    const oldCode = await codeService.getActiveCode(formattedId);
+    const newCode = await codeService.getActiveCode(formattedId);
 
     expect(oldCode?.code).toBeDefined();
     expect(newCode?.code).toBeDefined();
@@ -78,11 +78,11 @@ describe("code", () => {
     const codeService = new CodeService(repository, codeFabric);
     const formattedId = id.toString();
 
-    const oldCode = await codeService.getCode(formattedId);
+    const oldCode = await codeService.getActiveCode(formattedId);
 
     (differenceInMinutes as any).mockReturnValueOnce(11);
 
-    const newCode = await codeService.getCode(formattedId);
+    const newCode = await codeService.getActiveCode(formattedId);
 
     expect(oldCode?.code).toBeDefined();
     expect(newCode?.code).toBeDefined();
