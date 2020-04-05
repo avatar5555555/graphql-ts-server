@@ -8,6 +8,9 @@ const selectUserByEmailQuery = "SELECT * FROM users WHERE users.email = $1";
 const signUpQuery =
   "INSERT INTO USERS(email, salt, password, created_at) VALUES($1, $2, $3, $4) RETURNING *";
 
+const confirmEmailQuery =
+  "UPDATE users SET email_verified = true WHERE id = $1";
+
 export class Repository implements UserRepository {
   constructor(private store: Pool) {}
 
@@ -36,5 +39,9 @@ export class Repository implements UserRepository {
 
   signIn = async (userInput: UserInput): MaybeUserDto => {
     return this.findUserByEmail(userInput.email);
+  };
+
+  confirmEmail = async (useId: string): Promise<void> => {
+    await this.store.query(confirmEmailQuery, [useId]);
   };
 }

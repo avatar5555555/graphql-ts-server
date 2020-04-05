@@ -11,7 +11,7 @@ export class UserEntity {
   password: string;
   createdAt: Date;
 
-  constructor(user: Omit<UserDto, "id" | "created_at">) {
+  constructor(user: Omit<UserDto, "id" | "created_at" | "email_verified">) {
     this.email = user.email;
     this.salt = user.salt;
     this.password = user.password;

@@ -17,5 +17,3 @@ export const appConfig: Config = {
   charset: "UTF-8",
   useEmailStub: (process.env["USE_EMAIL_STUB"] as string) === "true",
 };
-
-console.log(appConfig);

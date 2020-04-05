@@ -14,6 +14,7 @@ export interface UserRepository {
   signUp: (userEntity: UserEntity) => MaybeUserDto;
   signIn: (userInput: UserInput) => MaybeUserDto;
   findUserByEmail: (email: string) => MaybeUserDto;
+  confirmEmail: (userId: string) => Promise<void>;
 }
 
 export interface UserDto {
@@ -22,6 +23,7 @@ export interface UserDto {
   password: string;
   salt: string;
   created_at: Date;
+  email_verified: boolean;
 }
 
 export interface ConfirmEmailInput {

@@ -5,6 +5,7 @@ export const typeDefs = gql`
     id: ID!
     email: String!
     createdAt: Date!
+    emailVerified: Boolean!
   }
 
   type Query {

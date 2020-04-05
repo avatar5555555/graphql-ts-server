@@ -158,6 +158,7 @@ export type User = {
   id: Scalars["ID"];
   email: Scalars["String"];
   createdAt: Scalars["Date"];
+  emailVerified: Scalars["Boolean"];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -277,6 +278,7 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars["String"]>;
   User: ResolverTypeWrapper<User>;
   Date: ResolverTypeWrapper<Scalars["Date"]>;
+  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   Artwork: ResolverTypeWrapper<Artwork>;
   ArtworkType: ArtworkType;
   Mutation: ResolverTypeWrapper<{}>;
@@ -284,7 +286,6 @@ export type ResolversTypes = ResolversObject<{
   ArtworkInput: ArtworkInput;
   SignUpResponse: ResolverTypeWrapper<SignUpResponse>;
   ArtistInput: ArtistInput;
-  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -295,6 +296,7 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars["String"];
   User: User;
   Date: Scalars["Date"];
+  Boolean: Scalars["Boolean"];
   Artwork: Artwork;
   ArtworkType: ArtworkType;
   Mutation: {};
@@ -302,7 +304,6 @@ export type ResolversParentTypes = ResolversObject<{
   ArtworkInput: ArtworkInput;
   SignUpResponse: SignUpResponse;
   ArtistInput: ArtistInput;
-  Boolean: Scalars["Boolean"];
 }>;
 
 export type ArtistResolvers<
@@ -470,6 +471,7 @@ export type UserResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   email?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
+  emailVerified?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   __isTypeOf?: isTypeOfResolverFn<ParentType>;
 }>;
 

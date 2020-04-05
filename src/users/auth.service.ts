@@ -148,6 +148,9 @@ export class AuthService {
         throw new UserInputError("Unprocessable Entity");
       }
 
+      await this.userRepository.confirmEmail(user.id);
+      await this.codeService.deleteCode(user.id);
+
       return { user, token };
     }
 

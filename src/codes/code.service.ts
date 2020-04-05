@@ -29,8 +29,8 @@ export class CodeService {
     return difference > appConfig.codeExpiresIn;
   };
 
-  private deleteCode = async (userId: string): MaybeCode => {
-    const codeDto = await this.repository.deleteCodeByUserId(userId);
+  private getCodeByUserId = async (userId: string): MaybeCode => {
+    const codeDto = await this.repository.findByUserId(userId);
 
     if (codeDto) {
       return this.codeFabric.getCodeFromDto(codeDto);
@@ -39,8 +39,8 @@ export class CodeService {
     return;
   };
 
-  private getCodeByUserId = async (userId: string): MaybeCode => {
-    const codeDto = await this.repository.findByUserId(userId);
+  deleteCode = async (userId: string): MaybeCode => {
+    const codeDto = await this.repository.deleteCodeByUserId(userId);
 
     if (codeDto) {
       return this.codeFabric.getCodeFromDto(codeDto);
