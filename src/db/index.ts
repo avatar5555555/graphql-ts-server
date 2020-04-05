@@ -1,11 +1,11 @@
 import { Pool } from "pg";
 
-import { config } from "../config";
+import { appConfig } from "../app-config";
 
 export const db = new Pool({
-  user: config.pgUser,
-  host: config.pgHost,
-  database: config.db,
-  password: config.pgPassword,
-  port: config.dbPort,
+  user: appConfig.pgUser,
+  host: appConfig.pgHost,
+  database: appConfig.db,
+  password: appConfig.pgPassword,
+  port: appConfig.dbPort,
 });

@@ -1,5 +1,3 @@
-/* eslint-disable promise/prefer-await-to-callbacks */
-import dotenv from "dotenv";
 import { ApolloServer } from "apollo-server";
 
 import { genSchema } from "./utils/gen-schema";
@@ -7,9 +5,6 @@ import { getEmailFormToken } from "./utils/get-email-from-token";
 import { store as userStore, userFabric } from "./users/resolvers";
 
 import { User } from "resolvers-types";
-
-// require dotenv config
-dotenv.config();
 
 const schema = genSchema();
 

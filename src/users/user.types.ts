@@ -28,7 +28,3 @@ export interface ConfirmEmailInput {
   email: string;
   code: string;
 }
-
-export interface Notifier {
-  notify: (code: string) => Promise<void>;
-}

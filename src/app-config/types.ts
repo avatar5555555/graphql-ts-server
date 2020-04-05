@@ -1,5 +1,5 @@
 export interface Config {
-  expiresIn: string;
+  tokenExpiresIn: string;
   tokenSecret: string;
   pgUser: string;
   pgHost: string;
@@ -7,4 +7,7 @@ export interface Config {
   db: string;
   dbPort: number;
   codeExpiresIn: number;
+  senderEmail: string;
+  charset: string;
+  useEmailStub: boolean;
 }

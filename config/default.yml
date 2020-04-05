@@ -1,0 +1,12 @@
+app:
+  tokenSecret: strong_key
+  tokenExpiresIn: 60min
+  pgUser: process.env.USER
+  pgHost: "localhost"
+  pgPassword: null
+  db: process.env.USER
+  dbPort: 5432
+  charset: UTF-8
+  codeExpiresIn: 10
+  senderEmail: noreply@example.com
+  useEmailStub: false
