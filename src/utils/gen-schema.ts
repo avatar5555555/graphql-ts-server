@@ -3,7 +3,10 @@ import * as path from "path";
 import { mergeTypes, mergeResolvers } from "merge-graphql-schemas";
 import * as glob from "glob";
 
-export const genSchema = () => {
+export const genSchema = (): {
+  typeDefs: string;
+  resolvers: any;
+} => {
   const pathToSources = path.join(__dirname, "../");
 
   const graphqlTypes = glob

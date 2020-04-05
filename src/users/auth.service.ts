@@ -1,12 +1,12 @@
 import { UserInputError, AuthenticationError } from "apollo-server";
 import * as bcrypt from "bcryptjs";
 
-import { User, AuthResponse, SignUpResponse } from "../resolvers-types";
+import { User, AuthResponse, SignUpResponse, Maybe } from "../resolvers-types";
 import { getTokens } from "../utils/get-token";
 import { passwordSchema } from "../validation-schemas/password-schema";
 import { emailSchema } from "../validation-schemas/email-schema";
 
-import { UserRepository, UserInput } from "./types";
+import { UserRepository, UserInput } from "./user.types";
 import { UserFabric } from "./user.entity";
 
 export class AuthService {
@@ -15,7 +15,9 @@ export class AuthService {
     private userFabric: UserFabric,
   ) {}
   // TODO: remove after client migration
-  register = async (userInput: UserInput): Promise<AuthResponse | never> => {
+  register = async (
+    userInput: UserInput,
+  ): Promise<AuthResponse | never | undefined> => {
     this.validateCredentials(userInput.email, userInput.password);
 
     const userExist = await this.checkIfEmailExists(userInput.email);
@@ -27,13 +29,20 @@ export class AuthService {
     const userEntity = await this.userFabric.getNewUserEntity(userInput);
 
     const userDto = await this.userRepository.signUp(userEntity);
-    const user = this.userFabric.getUserFromDto(userDto);
-    const token = getTokens(user);
 
-    return { user, token };
+    if (userDto) {
+      const user = this.userFabric.getUserFromDto(userDto);
+      const token = getTokens(user);
+
+      return { user, token };
+    }
+
+    return;
   };
 
-  signUp = async (userInput: UserInput): Promise<SignUpResponse | never> => {
+  signUp = async (
+    userInput: UserInput,
+  ): Promise<SignUpResponse | never | undefined> => {
     this.validateCredentials(userInput.email, userInput.password);
 
     const userExist = await this.checkIfEmailExists(userInput.email);
@@ -45,9 +54,14 @@ export class AuthService {
     const userEntity = await this.userFabric.getNewUserEntity(userInput);
 
     const userDto = await this.userRepository.signUp(userEntity);
-    const user = this.userFabric.getUserFromDto(userDto);
 
-    return { user };
+    if (userDto) {
+      const user = this.userFabric.getUserFromDto(userDto);
+
+      return { user };
+    }
+
+    return;
   };
 
   signIn = async (userInput: UserInput): Promise<AuthResponse | never> => {
@@ -72,7 +86,7 @@ export class AuthService {
     throw new AuthenticationError("Password or email is incorrect");
   };
 
-  me = async ({ user }: { user: User | null }) => {
+  me = async ({ user }: { user: User | null }): Promise<Maybe<User>> => {
     if (user) {
       return user;
     }
@@ -80,23 +94,23 @@ export class AuthService {
     throw new AuthenticationError("User is not authenticated");
   };
 
-  checkIfEmailExists = async (email: string): Promise<boolean> => {
+  private checkIfEmailExists = async (email: string): Promise<boolean> => {
     const userDto = await this.userRepository.findUserByEmail(email);
 
     return Boolean(userDto);
   };
 
-  validatePassword = async (
+  private validatePassword = async (
     password: string,
     salt: string,
     currentHash: string,
-  ) => {
+  ): Promise<boolean> => {
     const hash = await bcrypt.hash(password, salt);
 
     return hash === currentHash;
   };
 
-  validateCredentials = (email: string, password: string) => {
+  private validateCredentials = (email: string, password: string): void => {
     const isEmailValid = emailSchema.isValidSync(email);
     const isPasswordValid = passwordSchema.isValidSync(password);
 

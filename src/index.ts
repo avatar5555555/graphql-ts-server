@@ -13,7 +13,7 @@ dotenv.config();
 
 const schema = genSchema();
 
-const context = async ({ req }: any) => {
+const context = async ({ req }: any): Promise<{ user: User | null }> => {
   let user: User | null;
 
   try {
@@ -34,7 +34,7 @@ const server = new ApolloServer({
   context,
 });
 
-const start = async () => {
+const start = async (): Promise<void> => {
   try {
     const { url } = await server.listen();
 

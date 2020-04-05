@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 
-import { UserRepository, UserDto, UserInput } from "./types";
+import { UserRepository, UserDto, UserInput, MaybeUserDto } from "./user.types";
 import { UserEntity } from "./user.entity";
 
 const selectUserByEmailQuery = "SELECT * FROM users WHERE users.email = $1";
@@ -9,10 +9,7 @@ const signUpQuery =
   "INSERT INTO USERS(email, salt, password, created_at) VALUES($1, $2, $3, $4) RETURNING *";
 
 export class Repository implements UserRepository {
-  private store: Pool;
-  constructor(store: Pool) {
-    this.store = store;
-  }
+  constructor(private store: Pool) {}
 
   findUserByEmail = async (email: string): Promise<UserDto | undefined> => {
     const response = await this.store.query<UserDto>(selectUserByEmailQuery, [
@@ -24,7 +21,7 @@ export class Repository implements UserRepository {
     return user;
   };
 
-  signUp = async (userEntity: UserEntity) => {
+  signUp = async (userEntity: UserEntity): MaybeUserDto => {
     const result = await this.store.query<UserDto>(signUpQuery, [
       userEntity.email,
       userEntity.salt,
@@ -37,7 +34,7 @@ export class Repository implements UserRepository {
     return user;
   };
 
-  signIn = async (userInput: UserInput) => {
+  signIn = async (userInput: UserInput): MaybeUserDto => {
     return this.findUserByEmail(userInput.email);
   };
 }
