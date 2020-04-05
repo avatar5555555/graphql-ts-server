@@ -10,7 +10,7 @@ export const store = new Repository(db);
 export const userFabric = new UserFabric();
 export const authService = new AuthService(store, userFabric);
 
-const register = (_: any, args: UserInput) => {
+const signUp = (_: any, args: UserInput) => {
   return authService.signUp(args);
 };
 
@@ -28,7 +28,7 @@ const user = async (_: any, args: QueryUserArgs) => {
 
 export const resolvers: UserResolvers = {
   Mutation: {
-    register,
+    signUp,
     signIn,
   },
   Query: {
