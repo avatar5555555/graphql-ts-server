@@ -20,3 +20,8 @@ export interface UserDto {
   salt: string;
   created_at: Date;
 }
+
+export interface ConfirmEmailInput {
+  email: string;
+  code: string;
+}

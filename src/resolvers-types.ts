@@ -68,13 +68,19 @@ export type AuthResponse = {
 
 export type Mutation = {
   __typename?: "Mutation";
+  confirmEmail?: Maybe<AuthResponse>;
   createArtwork: Artwork;
   deleteArtwork: Artwork;
   register?: Maybe<AuthResponse>;
   signIn?: Maybe<AuthResponse>;
-  signUp?: Maybe<AuthResponse>;
+  signUp?: Maybe<SignUpResponse>;
   updateArtist: Artist;
   updateArtwork: Artwork;
+};
+
+export type MutationConfirmEmailArgs = {
+  email: Scalars["String"];
+  code: Scalars["String"];
 };
 
 export type MutationCreateArtworkArgs = {
@@ -134,6 +140,11 @@ export type QueryArtworksByArtistArgs = {
 
 export type QueryUserArgs = {
   id: Scalars["ID"];
+};
+
+export type SignUpResponse = {
+  __typename?: "SignUpResponse";
+  user: User;
 };
 
 export type User = {
@@ -263,8 +274,9 @@ export type ResolversTypes = ResolversObject<{
   Artwork: ResolverTypeWrapper<Artwork>;
   ArtworkType: ArtworkType;
   Mutation: ResolverTypeWrapper<{}>;
-  ArtworkInput: ArtworkInput;
   AuthResponse: ResolverTypeWrapper<AuthResponse>;
+  ArtworkInput: ArtworkInput;
+  SignUpResponse: ResolverTypeWrapper<SignUpResponse>;
   ArtistInput: ArtistInput;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 }>;
@@ -280,8 +292,9 @@ export type ResolversParentTypes = ResolversObject<{
   Artwork: Artwork;
   ArtworkType: ArtworkType;
   Mutation: {};
-  ArtworkInput: ArtworkInput;
   AuthResponse: AuthResponse;
+  ArtworkInput: ArtworkInput;
+  SignUpResponse: SignUpResponse;
   ArtistInput: ArtistInput;
   Boolean: Scalars["Boolean"];
 }>;
@@ -342,6 +355,12 @@ export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
 > = ResolversObject<{
+  confirmEmail?: Resolver<
+    Maybe<ResolversTypes["AuthResponse"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationConfirmEmailArgs, "email" | "code">
+  >;
   createArtwork?: Resolver<
     ResolversTypes["Artwork"],
     ParentType,
@@ -367,7 +386,7 @@ export type MutationResolvers<
     RequireFields<MutationSignInArgs, "email" | "password">
   >;
   signUp?: Resolver<
-    Maybe<ResolversTypes["AuthResponse"]>,
+    Maybe<ResolversTypes["SignUpResponse"]>,
     ParentType,
     ContextType,
     RequireFields<MutationSignUpArgs, "email" | "password">
@@ -424,6 +443,14 @@ export type QueryResolvers<
   users?: Resolver<Array<ResolversTypes["User"]>, ParentType, ContextType>;
 }>;
 
+export type SignUpResponseResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["SignUpResponse"] = ResolversParentTypes["SignUpResponse"]
+> = ResolversObject<{
+  user?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+}>;
+
 export type UserResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["User"] = ResolversParentTypes["User"]
@@ -441,6 +468,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Date?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  SignUpResponse?: SignUpResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;
 

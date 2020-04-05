@@ -1,7 +1,7 @@
 import { UserInputError, AuthenticationError } from "apollo-server";
 import * as bcrypt from "bcryptjs";
 
-import { User, AuthResponse } from "../resolvers-types";
+import { User, AuthResponse, SignUpResponse } from "../resolvers-types";
 import { getTokens } from "../utils/get-token";
 import { passwordSchema } from "../validation-schemas/password-schema";
 import { emailSchema } from "../validation-schemas/email-schema";
@@ -14,8 +14,8 @@ export class AuthService {
     private userRepository: UserRepository,
     private userFabric: UserFabric,
   ) {}
-
-  signUp = async (userInput: UserInput): Promise<AuthResponse | never> => {
+  // TODO: remove after client migration
+  register = async (userInput: UserInput): Promise<AuthResponse | never> => {
     this.validateCredentials(userInput.email, userInput.password);
 
     const userExist = await this.checkIfEmailExists(userInput.email);
@@ -31,6 +31,23 @@ export class AuthService {
     const token = getTokens(user);
 
     return { user, token };
+  };
+
+  signUp = async (userInput: UserInput): Promise<SignUpResponse | never> => {
+    this.validateCredentials(userInput.email, userInput.password);
+
+    const userExist = await this.checkIfEmailExists(userInput.email);
+
+    if (userExist) {
+      throw new UserInputError("Email already exists");
+    }
+
+    const userEntity = await this.userFabric.getNewUserEntity(userInput);
+
+    const userDto = await this.userRepository.signUp(userEntity);
+    const user = this.userFabric.getUserFromDto(userDto);
+
+    return { user };
   };
 
   signIn = async (userInput: UserInput): Promise<AuthResponse | never> => {

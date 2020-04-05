@@ -4,11 +4,19 @@ import { db } from "../db";
 import { Repository } from "./repository";
 import { AuthService } from "./auth.service";
 import { UserFabric } from "./user.entity";
-import { UserInput } from "./types";
+import { UserInput, ConfirmEmailInput } from "./types";
 
 export const store = new Repository(db);
 export const userFabric = new UserFabric();
 export const authService = new AuthService(store, userFabric);
+
+const register = (_: any, args: UserInput) => {
+  return authService.register(args);
+};
+
+const confirmEmail = (_: any, args: ConfirmEmailInput) => {
+  console.log(args);
+};
 
 const signUp = (_: any, args: UserInput) => {
   return authService.signUp(args);
@@ -28,12 +36,13 @@ const user = async (_: any, args: QueryUserArgs) => {
 
 export const resolvers: UserResolvers = {
   Mutation: {
-    register: signUp,
+    register,
+    confirmEmail,
     signUp,
     signIn,
   },
   Query: {
-    user,
     me,
+    user,
   },
 };
