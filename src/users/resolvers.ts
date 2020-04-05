@@ -28,6 +28,7 @@ const user = async (_: any, args: QueryUserArgs) => {
 
 export const resolvers: UserResolvers = {
   Mutation: {
+    register: signUp,
     signUp,
     signIn,
   },

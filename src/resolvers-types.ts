@@ -70,6 +70,7 @@ export type Mutation = {
   __typename?: "Mutation";
   createArtwork: Artwork;
   deleteArtwork: Artwork;
+  register?: Maybe<AuthResponse>;
   signIn?: Maybe<AuthResponse>;
   signUp?: Maybe<AuthResponse>;
   updateArtist: Artist;
@@ -82,6 +83,11 @@ export type MutationCreateArtworkArgs = {
 
 export type MutationDeleteArtworkArgs = {
   id: Scalars["ID"];
+};
+
+export type MutationRegisterArgs = {
+  email: Scalars["String"];
+  password: Scalars["String"];
 };
 
 export type MutationSignInArgs = {
@@ -347,6 +353,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteArtworkArgs, "id">
+  >;
+  register?: Resolver<
+    Maybe<ResolversTypes["AuthResponse"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationRegisterArgs, "email" | "password">
   >;
   signIn?: Resolver<
     Maybe<ResolversTypes["AuthResponse"]>,
