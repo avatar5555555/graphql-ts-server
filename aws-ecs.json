@@ -50,6 +50,14 @@
         {
           "valueFrom": "arn:aws:ssm:us-east-2:178710318434:parameter/PGUSER",
           "name": "PGUSER"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:us-east-2:178710318434:parameter/SENDER",
+          "name": "SENDER"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:us-east-2:178710318434:parameter/USE_EMAIL_STUB",
+          "name": "USE_EMAIL_STUB"
         }
       ],
       "dockerSecurityOptions": null,
@@ -57,7 +65,7 @@
       "memoryReservation": 256,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:84b45f872d0f4204ba4372bcfa100687e14aec53",
+      "image": "178710318434.dkr.ecr.us-east-2.amazonaws.com/avatar5555555:d69afd1860ff3a885015439b4d53b2abf96d4248",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -92,7 +100,7 @@
   "compatibilities": [
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:31",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:178710318434:task-definition/graphql-server:34",
   "family": "graphql-server",
   "requiresAttributes": [
     {
@@ -144,7 +152,7 @@
   ],
   "networkMode": null,
   "cpu": "256",
-  "revision": 31,
+  "revision": 34,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,

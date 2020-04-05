@@ -1,5 +1,3 @@
-/* eslint-disable promise/prefer-await-to-callbacks */
-import dotenv from "dotenv";
 import { ApolloServer } from "apollo-server";
 
 import { genSchema } from "./utils/gen-schema";
@@ -8,12 +6,9 @@ import { store as userStore, userFabric } from "./users/resolvers";
 
 import { User } from "resolvers-types";
 
-// require dotenv config
-dotenv.config();
-
 const schema = genSchema();
 
-const context = async ({ req }: any) => {
+const context = async ({ req }: any): Promise<{ user: User | null }> => {
   let user: User | null;
 
   try {
@@ -34,7 +29,7 @@ const server = new ApolloServer({
   context,
 });
 
-const start = async () => {
+const start = async (): Promise<void> => {
   try {
     const { url } = await server.listen();
 

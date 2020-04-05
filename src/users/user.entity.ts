@@ -3,7 +3,7 @@ import * as bcrypt from "bcryptjs";
 import { User } from "../resolvers-types";
 import { getCamelCaseObject } from "../utils/get-camel-case-object";
 
-import { UserDto, UserInput } from "./types";
+import { UserDto, UserInput } from "./user.types";
 
 export class UserEntity {
   email: string;

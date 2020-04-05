@@ -15,7 +15,15 @@ export const typeDefs = gql`
 
   type Mutation {
     register(email: String!, password: String!): AuthResponse
+      @deprecated(reason: "Use signUp")
+    signUp(email: String!, password: String!): SignUpResponse
+    confirmEmail(email: String!, code: String!): AuthResponse
     signIn(email: String!, password: String!): AuthResponse
+    sendCode(email: String!): SignUpResponse
+  }
+
+  type SignUpResponse {
+    user: User!
   }
 
   type AuthResponse {

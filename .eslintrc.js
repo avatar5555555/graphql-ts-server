@@ -56,6 +56,7 @@ module.exports = {
     ],
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-object-literal-type-assertion": "off",
+    "@typescript-eslint/explicit-function-return-type": "error",
 
     // import
     "import/order": [

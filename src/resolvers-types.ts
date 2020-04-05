@@ -68,12 +68,21 @@ export type AuthResponse = {
 
 export type Mutation = {
   __typename?: "Mutation";
+  confirmEmail?: Maybe<AuthResponse>;
   createArtwork: Artwork;
   deleteArtwork: Artwork;
+  /** @deprecated Use signUp */
   register?: Maybe<AuthResponse>;
+  sendCode?: Maybe<SignUpResponse>;
   signIn?: Maybe<AuthResponse>;
+  signUp?: Maybe<SignUpResponse>;
   updateArtist: Artist;
   updateArtwork: Artwork;
+};
+
+export type MutationConfirmEmailArgs = {
+  email: Scalars["String"];
+  code: Scalars["String"];
 };
 
 export type MutationCreateArtworkArgs = {
@@ -89,7 +98,16 @@ export type MutationRegisterArgs = {
   password: Scalars["String"];
 };
 
+export type MutationSendCodeArgs = {
+  email: Scalars["String"];
+};
+
 export type MutationSignInArgs = {
+  email: Scalars["String"];
+  password: Scalars["String"];
+};
+
+export type MutationSignUpArgs = {
   email: Scalars["String"];
   password: Scalars["String"];
 };
@@ -130,6 +148,11 @@ export type QueryUserArgs = {
   id: Scalars["ID"];
 };
 
+export type SignUpResponse = {
+  __typename?: "SignUpResponse";
+  user: User;
+};
+
 export type User = {
   __typename?: "User";
   id: Scalars["ID"];
@@ -142,13 +165,6 @@ export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
-export type ResolverFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo,
-) => Promise<TResult> | TResult;
-
 export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
@@ -157,6 +173,13 @@ export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
+
+export type ResolverFn<TResult, TParent, TContext, TArgs> = (
+  parent: TParent,
+  args: TArgs,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => Promise<TResult> | TResult;
 
 export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
@@ -224,12 +247,12 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   parent: TParent,
   context: TContext,
   info: GraphQLResolveInfo,
-) => Maybe<TTypes>;
+) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
 export type isTypeOfResolverFn<T = {}> = (
   obj: T,
   info: GraphQLResolveInfo,
-) => boolean;
+) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -257,8 +280,9 @@ export type ResolversTypes = ResolversObject<{
   Artwork: ResolverTypeWrapper<Artwork>;
   ArtworkType: ArtworkType;
   Mutation: ResolverTypeWrapper<{}>;
-  ArtworkInput: ArtworkInput;
   AuthResponse: ResolverTypeWrapper<AuthResponse>;
+  ArtworkInput: ArtworkInput;
+  SignUpResponse: ResolverTypeWrapper<SignUpResponse>;
   ArtistInput: ArtistInput;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 }>;
@@ -274,8 +298,9 @@ export type ResolversParentTypes = ResolversObject<{
   Artwork: Artwork;
   ArtworkType: ArtworkType;
   Mutation: {};
-  ArtworkInput: ArtworkInput;
   AuthResponse: AuthResponse;
+  ArtworkInput: ArtworkInput;
+  SignUpResponse: SignUpResponse;
   ArtistInput: ArtistInput;
   Boolean: Scalars["Boolean"];
 }>;
@@ -336,6 +361,12 @@ export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
 > = ResolversObject<{
+  confirmEmail?: Resolver<
+    Maybe<ResolversTypes["AuthResponse"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationConfirmEmailArgs, "email" | "code">
+  >;
   createArtwork?: Resolver<
     ResolversTypes["Artwork"],
     ParentType,
@@ -354,11 +385,23 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationRegisterArgs, "email" | "password">
   >;
+  sendCode?: Resolver<
+    Maybe<ResolversTypes["SignUpResponse"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationSendCodeArgs, "email">
+  >;
   signIn?: Resolver<
     Maybe<ResolversTypes["AuthResponse"]>,
     ParentType,
     ContextType,
     RequireFields<MutationSignInArgs, "email" | "password">
+  >;
+  signUp?: Resolver<
+    Maybe<ResolversTypes["SignUpResponse"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationSignUpArgs, "email" | "password">
   >;
   updateArtist?: Resolver<
     ResolversTypes["Artist"],
@@ -412,6 +455,14 @@ export type QueryResolvers<
   users?: Resolver<Array<ResolversTypes["User"]>, ParentType, ContextType>;
 }>;
 
+export type SignUpResponseResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["SignUpResponse"] = ResolversParentTypes["SignUpResponse"]
+> = ResolversObject<{
+  user?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+}>;
+
 export type UserResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["User"] = ResolversParentTypes["User"]
@@ -429,6 +480,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Date?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  SignUpResponse?: SignUpResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;
 

@@ -1,6 +1,14 @@
+import { Pool } from "pg";
+
+import { CodeFabric } from "../codes/code.entity";
+import { CodeService } from "../codes/code.service";
+import { Repository as CodeRepository } from "../codes/code.repository";
+import { EmailTransport } from "../email/email.transport";
+import { EmailService } from "../email/email.service";
+
 import { AuthService } from "./auth.service";
 import { UserFabric } from "./user.entity";
-import { UserRepository, UserDto } from "./types";
+import { UserRepository, UserDto } from "./user.types";
 
 let store: UserDto[] = [];
 let id = 0;
@@ -30,44 +38,42 @@ const userRepositoryMock: UserRepository = {
 describe("auth service", () => {
   let authService: AuthService;
   const userFabric = new UserFabric();
+  // code service
+  const codeFabric = new CodeFabric();
+  const codeRepository = new CodeRepository({} as Pool);
+  const codeService = new CodeService(codeRepository, codeFabric);
+
+  // email service
+  const emailTransport = new EmailTransport();
+  const emailService = new EmailService(emailTransport);
 
   beforeEach(() => {
     store = [];
-    authService = new AuthService(userRepositoryMock, userFabric);
+    authService = new AuthService(
+      userRepositoryMock,
+      userFabric,
+      codeService,
+      emailService,
+    );
   });
 
   it("creates a user", async () => {
     const data = await authService.signUp({ email, password });
 
-    expect(data.user.email).toEqual(email);
+    expect(data!.user.email).toEqual(email);
   });
 
   it("login", async () => {
     const data = await authService.signUp({ email, password });
     const data2 = await authService.signIn({ email, password });
 
-    expect(data.user.email).toEqual(data2.user.email);
+    expect(data!.user.email).toEqual(data2.user.email);
   });
 
   it("me works", async () => {
     const data = await authService.signUp({ email, password });
-    const data2 = await authService.me(data);
+    const data2 = await authService.me(data!);
 
-    expect(data.user.email).toEqual(data2.email);
-  });
-
-  it("checks if email exist", async () => {
-    await authService.signUp({ email, password });
-    const hasUser = await authService.checkIfEmailExists(email);
-    const hasUser2 = await authService.checkIfEmailExists("b@b.b");
-
-    expect(hasUser).toBeTruthy();
-    expect(hasUser2).toBeFalsy();
-  });
-
-  it("validates input", () => {
-    expect(authService.validateCredentials(email, password)).toBe(undefined);
-    expect(() => authService.validateCredentials("", password)).toThrowError();
-    expect(() => authService.validateCredentials(email, "")).toThrowError();
+    expect(data!.user.email).toEqual(data2!.email);
   });
 });
