@@ -6,4 +6,5 @@ export interface Config {
   pgPassword: string;
   db: string;
   dbPort: number;
+  codeExpiresIn: number;
 }

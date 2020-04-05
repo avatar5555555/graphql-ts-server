@@ -8,4 +8,5 @@ export const config: Config = {
   pgPassword: process.env["PGPASSWORD"] as string,
   db: process.env["PGDATABASE"] as string,
   dbPort: Number(process.env["PGPORT"]),
+  codeExpiresIn: 10, //minutes
 };
