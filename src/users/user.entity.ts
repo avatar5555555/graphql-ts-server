@@ -22,9 +22,17 @@ export class UserEntity {
 export class UserFabric {
   constructor() {}
 
-  getNewUserEntity = async (userInput: UserInput): Promise<UserEntity> => {
+  getSaltAndHash = async (
+    newPassword: string,
+  ): Promise<{ salt: string; hash: string }> => {
     const salt = await bcrypt.genSalt();
-    const hash = await bcrypt.hash(userInput.password, salt);
+    const hash = await bcrypt.hash(newPassword, salt);
+
+    return { salt, hash };
+  };
+
+  getNewUserEntity = async (userInput: UserInput): Promise<UserEntity> => {
+    const { salt, hash } = await this.getSaltAndHash(userInput.password);
 
     return new UserEntity({
       ...userInput,
