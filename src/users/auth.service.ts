@@ -1,16 +1,22 @@
 import { UserInputError, AuthenticationError } from "apollo-server";
 import * as bcrypt from "bcryptjs";
 
-import { User, AuthResponse, SignUpResponse, Maybe } from "../resolvers-types";
-import { getTokens } from "../utils/get-token";
+import { User, AuthResponse, SignUpResponse } from "../resolvers-types";
+import { getToken } from "../utils/get-token";
 import { passwordSchema } from "../validation-schemas/password-schema";
 import { emailSchema } from "../validation-schemas/email-schema";
 import { EmailService } from "../email/email.service";
+import { CodeService } from "../codes/code.service";
+import { ErrorCode } from "../error-code";
 
-import { UserRepository, UserInput, ConfirmEmailInput } from "./user.types";
+import {
+  UserRepository,
+  UserInput,
+  ConfirmEmailInput,
+  MaybeUserDto,
+  ResetPasswordInput,
+} from "./user.types";
 import { UserFabric } from "./user.entity";
-
-import { CodeService } from "codes/code.service";
 
 export class AuthService {
   constructor(
@@ -39,8 +45,19 @@ export class AuthService {
     const isEmailValid = emailSchema.isValidSync(email);
 
     if (!isEmailValid) {
-      throw new UserInputError("Unprocessable Entity");
+      throw new UserInputError(ErrorCode.UnprocessableEntity);
     }
+  };
+
+  private getUserDto = async (email: string): MaybeUserDto | never => {
+    this.validateEmail(email);
+    const userDto = await this.userRepository.findUserByEmail(email);
+
+    if (!userDto) {
+      throw new UserInputError(ErrorCode.UnprocessableEntity);
+    }
+
+    return userDto;
   };
 
   private validateCredentials = (email: string, password: string): void => {
@@ -48,58 +65,26 @@ export class AuthService {
     const isPasswordValid = passwordSchema.isValidSync(password);
 
     if (!isEmailValid || !isPasswordValid) {
-      throw new UserInputError("Unprocessable Entity");
+      throw new UserInputError(ErrorCode.UnprocessableEntity);
     }
   };
 
-  // TODO: remove after client migration
-  register = async (
-    userInput: UserInput,
-  ): Promise<AuthResponse | never | undefined> => {
+  signUp = async (userInput: UserInput): Promise<SignUpResponse | never> => {
     this.validateCredentials(userInput.email, userInput.password);
 
     const userExist = await this.checkIfEmailExists(userInput.email);
 
     if (userExist) {
-      throw new UserInputError("Email already exists");
+      throw new UserInputError(ErrorCode.EmailAlreadyExists);
     }
 
     const userEntity = await this.userFabric.getNewUserEntity(userInput);
 
     const userDto = await this.userRepository.signUp(userEntity);
 
-    if (userDto) {
-      const user = this.userFabric.getUserFromDto(userDto);
-      const token = getTokens(user);
+    const user = this.userFabric.getUserFromDto(userDto!);
 
-      return { user, token };
-    }
-
-    return;
-  };
-
-  signUp = async (
-    userInput: UserInput,
-  ): Promise<SignUpResponse | never | undefined> => {
-    this.validateCredentials(userInput.email, userInput.password);
-
-    const userExist = await this.checkIfEmailExists(userInput.email);
-
-    if (userExist) {
-      throw new UserInputError("Email already exists");
-    }
-
-    const userEntity = await this.userFabric.getNewUserEntity(userInput);
-
-    const userDto = await this.userRepository.signUp(userEntity);
-
-    if (userDto) {
-      const user = this.userFabric.getUserFromDto(userDto);
-
-      return { user };
-    }
-
-    return;
+    return { user };
   };
 
   signIn = async (userInput: UserInput): Promise<AuthResponse | never> => {
@@ -116,62 +101,75 @@ export class AuthService {
 
     if (isValidCredentials && userDto) {
       const user = this.userFabric.getUserFromDto(userDto);
-      const token = getTokens(user);
+      const token = getToken(user);
 
       return { user, token };
     }
 
-    throw new AuthenticationError("Password or email is incorrect");
+    throw new AuthenticationError(ErrorCode.InvalidCredentials);
   };
 
-  me = async ({ user }: { user: User | null }): Promise<Maybe<User>> => {
+  me = async ({ user }: { user: User | null }): Promise<User | never> => {
     if (user) {
       return user;
     }
 
-    throw new AuthenticationError("User is not authenticated");
+    throw new AuthenticationError(ErrorCode.UnauthenticatedUser);
   };
 
   confirmEmail = async (
     codeInput: ConfirmEmailInput,
-  ): Promise<AuthResponse | never | undefined> => {
-    this.validateEmail(codeInput.email);
+  ): Promise<AuthResponse | never> => {
+    const userDto = await this.getUserDto(codeInput.email);
 
-    const userDto = await this.userRepository.findUserByEmail(codeInput.email);
+    const user = this.userFabric.getUserFromDto(userDto!);
+    const codeEntity = await this.codeService.getActiveCode(user.id);
+    const token = getToken(user);
 
-    if (userDto) {
-      const user = this.userFabric.getUserFromDto(userDto);
-      const codeEntity = await this.codeService.getActiveCode(user.id);
-      const token = getTokens(user);
-
-      if (codeInput.code !== codeEntity?.code) {
-        throw new UserInputError("Unprocessable Entity");
-      }
-
-      await this.userRepository.confirmEmail(user.id);
-      await this.codeService.deleteCode(user.id);
-
-      return { user, token };
+    if (codeInput.code !== codeEntity?.code) {
+      throw new UserInputError(ErrorCode.UnprocessableEntity);
     }
 
-    return;
+    await this.userRepository.confirmEmail(user.id);
+    await this.codeService.deleteCode(user.id);
+
+    return { user, token };
   };
 
-  sendCode = async (
-    email: string,
-  ): Promise<SignUpResponse | never | undefined> => {
-    this.validateEmail(email);
-    const userDto = await this.userRepository.findUserByEmail(email);
+  sendCode = async (email: string): Promise<SignUpResponse | never> => {
+    const userDto = await this.getUserDto(email);
 
-    if (!userDto) {
-      throw new UserInputError("Unprocessable Entity");
-    }
-
-    const user = this.userFabric.getUserFromDto(userDto);
+    const user = this.userFabric.getUserFromDto(userDto!);
     const codeEntity = await this.codeService.getActiveCode(user.id);
 
     this.emailService.sendCode(user.email, codeEntity?.code ?? "");
 
     return { user };
+  };
+
+  resetPassword = async (
+    resetPasswordInput: ResetPasswordInput,
+  ): Promise<AuthResponse | never> => {
+    const userDto = await this.getUserDto(resetPasswordInput.email);
+    const user = this.userFabric.getUserFromDto(userDto!);
+    const codeEntity = await this.codeService.getActiveCode(user.id);
+
+    if (codeEntity?.code !== resetPasswordInput.code) {
+      throw new UserInputError(ErrorCode.UnprocessableEntity);
+    }
+
+    const { salt, hash } = await this.userFabric.getSaltAndHash(
+      resetPasswordInput.newPassword,
+    );
+
+    await this.userRepository.updatePassword({
+      userId: user.id,
+      newPassword: hash,
+      salt,
+    });
+    await this.codeService.deleteCode(user.id);
+    const token = getToken(user);
+
+    return { user, token };
   };
 }

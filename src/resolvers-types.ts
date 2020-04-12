@@ -71,8 +71,7 @@ export type Mutation = {
   confirmEmail?: Maybe<AuthResponse>;
   createArtwork: Artwork;
   deleteArtwork: Artwork;
-  /** @deprecated Use signUp */
-  register?: Maybe<AuthResponse>;
+  resetPassword?: Maybe<AuthResponse>;
   sendCode?: Maybe<SignUpResponse>;
   signIn?: Maybe<AuthResponse>;
   signUp?: Maybe<SignUpResponse>;
@@ -93,9 +92,10 @@ export type MutationDeleteArtworkArgs = {
   id: Scalars["ID"];
 };
 
-export type MutationRegisterArgs = {
+export type MutationResetPasswordArgs = {
   email: Scalars["String"];
-  password: Scalars["String"];
+  newPassword: Scalars["String"];
+  code: Scalars["String"];
 };
 
 export type MutationSendCodeArgs = {
@@ -380,11 +380,11 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteArtworkArgs, "id">
   >;
-  register?: Resolver<
+  resetPassword?: Resolver<
     Maybe<ResolversTypes["AuthResponse"]>,
     ParentType,
     ContextType,
-    RequireFields<MutationRegisterArgs, "email" | "password">
+    RequireFields<MutationResetPasswordArgs, "email" | "newPassword" | "code">
   >;
   sendCode?: Resolver<
     Maybe<ResolversTypes["SignUpResponse"]>,
