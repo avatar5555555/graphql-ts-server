@@ -11,7 +11,7 @@ import { EmailStub } from "../email/email.stub";
 import { Repository } from "./user.repository";
 import { AuthService } from "./auth.service";
 import { UserFabric } from "./user.entity";
-import { UserInput, ConfirmEmailInput } from "./user.types";
+import { UserInput, ConfirmEmailInput, ResetPasswordInput } from "./user.types";
 
 // user service
 export const store = new Repository(db);
@@ -37,13 +37,6 @@ export const authService = new AuthService(
   codeService,
   emailService,
 );
-
-const register = (
-  _: any,
-  args: UserInput,
-): ReturnType<typeof authService.register> => {
-  return authService.register(args);
-};
 
 const confirmEmail = (
   _: any,
@@ -85,9 +78,16 @@ const user = async (_: any, args: QueryUserArgs): Promise<void> => {
   console.log(args);
 };
 
+const resetPassword = async (
+  _: any,
+  args: ResetPasswordInput,
+): ReturnType<typeof authService.resetPassword> => {
+  return authService.resetPassword(args);
+};
+
 export const resolvers: UserResolvers = {
   Mutation: {
-    register,
+    resetPassword,
     confirmEmail,
     sendCode,
     signUp,

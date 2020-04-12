@@ -1,4 +1,10 @@
-import { UserRepository, UserDto, MaybeUserDto, UserInput } from "./user.types";
+import {
+  UserRepository,
+  UserDto,
+  MaybeUserDto,
+  UserInput,
+  UpdatePasswordInput,
+} from "./user.types";
 import { UserEntity } from "./user.entity";
 
 export class UserRepositoryStub implements UserRepository {
@@ -38,6 +44,26 @@ export class UserRepositoryStub implements UserRepository {
 
       return { ...user, email_verified: true };
     });
+
+    return Promise.resolve();
+  };
+
+  updatePassword = (
+    updatePasswordInput: UpdatePasswordInput,
+  ): Promise<void> => {
+    const updatesStore = this.store.map((user) => {
+      if (user.id !== updatePasswordInput.userId) {
+        return user;
+      }
+
+      return {
+        ...user,
+        salt: updatePasswordInput.salt,
+        password: updatePasswordInput.newPassword,
+      };
+    });
+
+    this.store = updatesStore;
 
     return Promise.resolve();
   };
