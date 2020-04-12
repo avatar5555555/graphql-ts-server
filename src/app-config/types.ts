@@ -10,4 +10,5 @@ export interface Config {
   senderEmail: string;
   charset: string;
   useEmailStub: boolean;
+  emailAWSRegion: string;
 }

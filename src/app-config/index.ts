@@ -16,4 +16,5 @@ export const appConfig: Config = {
   senderEmail: process.env["SENDER"] as string,
   charset: "UTF-8",
   useEmailStub: (process.env["USE_EMAIL_STUB"] as string) === "true",
+  emailAWSRegion: "us-east-1",
 };

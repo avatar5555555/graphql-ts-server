@@ -6,7 +6,7 @@ import { appConfig } from "../app-config";
 import { TransportService } from "./email.types";
 import { getHtml, getText } from "./get-texts";
 
-AWSConfig.update({ region: "us-east-1" });
+AWSConfig.update({ region: appConfig.emailAWSRegion });
 
 const subject = "Test project verification code";
 
