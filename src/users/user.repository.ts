@@ -1,6 +1,12 @@
 import { Pool } from "pg";
 
-import { UserRepository, UserDto, UserInput, MaybeUserDto } from "./user.types";
+import {
+  UserRepository,
+  UserDto,
+  UserInput,
+  MaybeUserDto,
+  UpdatePasswordInput,
+} from "./user.types";
 import { UserEntity } from "./user.entity";
 
 const selectUserByEmailQuery = "SELECT * FROM users WHERE users.email = $1";
@@ -10,6 +16,9 @@ const signUpQuery =
 
 const confirmEmailQuery =
   "UPDATE users SET email_verified = true WHERE id = $1";
+
+const updatePasswordQuery =
+  "UPDATE users SET salt = $2, password = $3 WHERE id = $1";
 
 export class Repository implements UserRepository {
   constructor(private store: Pool) {}
@@ -43,5 +52,13 @@ export class Repository implements UserRepository {
 
   confirmEmail = async (useId: string): Promise<void> => {
     await this.store.query(confirmEmailQuery, [useId]);
+  };
+
+  updatePassword = async ({
+    userId,
+    salt,
+    newPassword,
+  }: UpdatePasswordInput): Promise<void> => {
+    await this.store.query(updatePasswordQuery, [userId, salt, newPassword]);
   };
 }

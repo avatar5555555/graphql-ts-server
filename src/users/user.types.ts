@@ -15,6 +15,7 @@ export interface UserRepository {
   signIn: (userInput: UserInput) => MaybeUserDto;
   findUserByEmail: (email: string) => MaybeUserDto;
   confirmEmail: (userId: string) => Promise<void>;
+  updatePassword: (updatePasswordInput: UpdatePasswordInput) => Promise<void>;
 }
 
 export interface UserDto {
@@ -29,4 +30,16 @@ export interface UserDto {
 export interface ConfirmEmailInput {
   email: string;
   code: string;
+}
+
+export interface ResetPasswordInput {
+  email: string;
+  newPassword: string;
+  code: string;
+}
+
+export interface UpdatePasswordInput {
+  userId: string;
+  salt: string;
+  newPassword: string;
 }
